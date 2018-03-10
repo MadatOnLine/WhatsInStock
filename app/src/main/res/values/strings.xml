@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Whats In Stock</string>
+    <string name="Search1">Search</string>
+    <string name="IngredientsSearch" />
+    <string name="SearchHint">Search Ingredients</string>
+    <string name="Prompt">What\'s in stock?</string>
+    <string name="Prompt1">What\'s in stock?</string>
+    <string name="Search2">Search</string>
 </resources>
