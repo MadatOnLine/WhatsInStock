@@ -3,6 +3,7 @@ package team02.whatsinstock;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,6 +16,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     // Ingredients should not be searched if none have been selected
     private List <String> ingredientsList = new ArrayList<>();
+    private static final String S_TAG = "List Check";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +35,9 @@ public class MainActivity extends AppCompatActivity {
         //Protein Checklist
         ListView protein = (ListView) findViewById(R.id.Protein);
         protein.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        String[] pItems = {"Beef", "Pork", "Chicken", "Fish"};
+        String[] pItems = {"Beef", "Pork", "Chicken", "Fish", "Nuts"};
         ArrayAdapter<String> pAdapter = new ArrayAdapter<>(this, R.layout.rowlayout, R.id.Protein, pItems);
-        protein.setAdapter(pAdapter);
+        protein.setAdapter(pAdapter); // Error starts here
         protein.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -49,10 +51,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
         //Dairy Checklist
         ListView dairy = (ListView) findViewById(R.id.Dairy);
         dairy.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        String[] dItems = {"Beef", "Pork", "Chicken", "Fish"};
+        String[] dItems = {"Milk"};
         ArrayAdapter<String> dAdapter = new ArrayAdapter<>(this, R.layout.rowlayout, R.id.Dairy, dItems);
         dairy.setAdapter(dAdapter);
         dairy.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -114,5 +117,16 @@ public class MainActivity extends AppCompatActivity {
             editor.putString(String.valueOf(i++), data);
         }
         editor.apply();
+    }
+
+    public void onSearch(View view) {
+        if (ingredientsList.size() == 0) {
+            Log.e(S_TAG, "List is void.");
+        }
+        else {
+            Log.i(S_TAG, "Starting search.");
+        }
+
+        Log.i(S_TAG, "Finished!");
     }
 }
