@@ -13,11 +13,20 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <p>Main Activity  starts the program calls onCreate(), onSearch(), onStop().
+ * Sets up the ListViews.</p>
+ */
 public class MainActivity extends AppCompatActivity {
     // Ingredients should not be searched if none have been selected
     private List <String> ingredientsList = new ArrayList<>();
     private static final String S_TAG = "List Check";
 
+    /**
+     * Sets up app on start and defines local variables.
+     * Will use saved [ingredientsList] if one is found.
+     * @param savedInstanceState uses any saved information.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,12 +42,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //Protein Checklist
-        ListView protein = (ListView) findViewById(R.id.Protein);
-        protein.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        String[] pItems = {"Beef", "Pork", "Chicken", "Fish", "Nuts"};
-        ArrayAdapter<String> pAdapter = new ArrayAdapter<>(this, R.layout.rowlayout, R.id.Protein, pItems);
-        protein.setAdapter(pAdapter); // Error starts here
-        protein.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ListView food = (ListView) findViewById(R.id.Food);
+        food.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        String[] items = {"Beef", "Pork", "Chicken", "Fish", "Milk", "Cheese", "Tomatoes", "Lettuce"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.rowlayout, R.id.Food, items);
+        food.setAdapter(adapter); // Error starts here
+        food.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String ingredient = ((TextView) view).getText().toString();
@@ -51,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
+        /*
         //Dairy Checklist
         ListView dairy = (ListView) findViewById(R.id.Dairy);
         dairy.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
@@ -104,9 +113,12 @@ public class MainActivity extends AppCompatActivity {
                     ingredientsList.add(ingredient);
                 }
             }
-        });
+        }); */
     }
 
+    /**
+     * Saves [ingredientsList] when app is closed.
+     */
     @Override
     protected void onStop() {
         super.onStop();
@@ -119,6 +131,10 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    /**
+     * Sends [ingredientsList] to Search class on button prompt.
+     * @param view works with search button.
+     */
     public void onSearch(View view) {
         if (ingredientsList.size() == 0) {
             Log.e(S_TAG, "List is void.");
