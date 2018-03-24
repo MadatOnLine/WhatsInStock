@@ -1,26 +1,30 @@
 package team02.whatsinstock;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * <p>Main Activity  starts the program calls onCreate(), onSearch(), onStop().
  * Sets up the ListViews.</p>
  */
 public class MainActivity extends AppCompatActivity {
-    // Ingredients should not be searched if none have been selected
     private List <String> ingredientsList = new ArrayList<>();
     private static final String S_TAG = "List Check";
+    private ArrayList<Recipe> recipes = new ArrayList<>();
 
     /**
      * Sets up app on start and defines local variables.
@@ -40,7 +44,13 @@ public class MainActivity extends AppCompatActivity {
                 ingredientsList.add(data);
             }
         }
+        else {
+            ingredientsList.add("chicken");
+            ingredientsList.add("flour");
+            ingredientsList.add("sugar");
+        }
 
+        /*
         //Protein Checklist
         ListView food = (ListView) findViewById(R.id.Food);
         food.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
@@ -59,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        /*
         //Dairy Checklist
         ListView dairy = (ListView) findViewById(R.id.Dairy);
         dairy.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
@@ -132,17 +140,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Sends [ingredientsList] to Search class on button prompt.
+     * Sends [ingredientsList] to SearchRecipe class on button prompt.
      * @param view works with search button.
      */
-    public void onSearch(View view) {
+    public void onSearch(View view) throws UnirestException {
         if (ingredientsList.size() == 0) {
-            Log.e(S_TAG, "List is void.");
+            Log.e(S_TAG, "List is empty.");
         }
         else {
-            Log.i(S_TAG, "Starting search.");
+            Log.d(S_TAG, "Starting search.");
+
+            final RecipeSearch recipeSearch = new RecipeSearch();
+            RecipeSearch.searchRecipes(ingredientsList.get(0), ingredientsList.get(1), new Callback(){
+                @Override
+                public void onFailure(Call call, IOException e) {e.printStackTrace();}
+
+                @Override
+                public void onResponse(Call call, Response response) {
+                    recipes = recipeSearch.processResults(response);
+                    Log.d("TAG", recipes.get(0).getName());
+
+                    /* call new activity */
+                    Intent display = new Intent(MainActivity.this, DisplayResults.class);
+                    display.putExtra("RECIPE_LIST", recipes);
+                    startActivity(display);
+                }
+            });
+
         }
 
-        Log.i(S_TAG, "Finished!");
+        Log.d(S_TAG, "Finished!");
     }
 }
