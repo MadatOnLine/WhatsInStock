@@ -3,9 +3,11 @@ package team02.whatsinstock;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 
@@ -25,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
     private List <String> ingredientsList = new ArrayList<>();
     private static final String S_TAG = "List Check";
     private ArrayList<Recipe> recipes = new ArrayList<>();
+    private ProgressBar progressBar;
+    private int progressBarStatus = 0;
+    private Handler progressHandler = new Handler();
 
     /**
      * Sets up app on start and defines local variables.
@@ -36,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         SharedPreferences preferences = getSharedPreferences("SavedIngredients", MODE_PRIVATE);
         if (preferences.contains("0")) {
             int i = 0;
@@ -160,6 +166,29 @@ public class MainActivity extends AppCompatActivity {
                     recipes = recipeSearch.processResults(response);
                     Log.d("TAG", recipes.get(0).getName());
 
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            /*filter will happen here in milestone 3*/
+                            while (progressBarStatus < 100){
+                                progressBarStatus++;
+                                android.os.SystemClock.sleep(50);
+                                progressHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        progressBar.setProgress(progressBarStatus);
+                                    }
+                                });
+                            }
+                            progressHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.d(S_TAG, "Finished!");
+                                }
+                            });
+                        }
+                    }).start();
+
                     /* call new activity */
                     Intent display = new Intent(MainActivity.this, DisplayResults.class);
                     display.putExtra("RECIPE_LIST", recipes);
@@ -169,6 +198,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        Log.d(S_TAG, "Finished!");
+
     }
 }

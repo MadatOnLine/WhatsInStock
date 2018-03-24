@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,8 +23,7 @@ public class DisplayResults extends AppCompatActivity {
         for (Recipe e : recipes) {
             names.add(e.getName());
         }
-        /*
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_recipe_layout, R.id.result_list, names);
+        /*ListAdapter adapter = new ArrayAdapter<String>(this, R.layout.list_recipe_layout, R.id.result_list, names);
         resultList.setAdapter(adapter);*/
     }
 }
