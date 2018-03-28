@@ -13,7 +13,6 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -24,7 +23,7 @@ import okhttp3.Response;
  * Sets up the ListViews.</p>
  */
 public class MainActivity extends AppCompatActivity {
-    private List <String> ingredientsList = new ArrayList<>();
+    private ArrayList <String> ingredientsList = new ArrayList<>();
     private static final String S_TAG = "List Check";
     private ArrayList<Recipe> recipes = new ArrayList<>();
     private ProgressBar progressBar;
@@ -169,10 +168,15 @@ public class MainActivity extends AppCompatActivity {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            /*filter will happen here in milestone 3*/
-                            while (progressBarStatus < 100){
+                            /*Filters out recipes that contain ingredients not in the ingredients list provided*/
+                            for (Recipe data : recipes){
                                 progressBarStatus++;
-                                android.os.SystemClock.sleep(50);
+                                String rList[] = data.getIngredients();
+                                for (int i = 0; i < rList.length; i++) {
+                                    if (!(ingredientsList.contains(rList[i]))) {
+                                        recipes.remove(data);
+                                    }
+                                }
                                 progressHandler.post(new Runnable() {
                                     @Override
                                     public void run() {
