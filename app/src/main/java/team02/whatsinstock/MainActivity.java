@@ -7,7 +7,11 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 
@@ -45,24 +49,20 @@ public class MainActivity extends AppCompatActivity {
         if (preferences.contains("0")) {
             int i = 0;
             while (preferences.contains(String.valueOf(i))) {
-                String data = preferences.getString(String.valueOf(i++),"");
+                String data = preferences.getString(String.valueOf(i++), "");
                 ingredientsList.add(data);
             }
         }
-        else {
-            ingredientsList.add("chicken");
-            ingredientsList.add("flour");
-            ingredientsList.add("sugar");
-        }
 
-        /*
+
+
         //Protein Checklist
-        ListView food = (ListView) findViewById(R.id.Food);
-        food.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        String[] items = {"Beef", "Pork", "Chicken", "Fish", "Milk", "Cheese", "Tomatoes", "Lettuce"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.rowlayout, R.id.Food, items);
-        food.setAdapter(adapter); // Error starts here
-        food.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        String[] pItems = {"Beef", "Pork", "Chicken", "Fish", "Milk", "Cheese", "Tomatoes", "Lettuce"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.rowlayout, pItems);
+        ListView pList = (ListView) findViewById(R.id.Proteins);
+        pList.setAdapter(adapter); // Error starts here
+        pList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        pList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String ingredient = ((TextView) view).getText().toString();
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
+/*
         //Dairy Checklist
         ListView dairy = (ListView) findViewById(R.id.Dairy);
         dairy.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
