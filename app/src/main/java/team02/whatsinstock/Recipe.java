@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 /**
  * Created by Ryan on 3/23/2018.
+ * This class is used to hold all the information for a Recipe from
+ * Edamam Recipe Database.
  */
 
 public class Recipe implements Serializable {

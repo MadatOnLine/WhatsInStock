@@ -16,12 +16,18 @@ import okhttp3.Response;
 
 /**
  * Created by Ryan on 3/23/2018.
- * searches for recipes that might work.
+ * Searches the Edamam database for recipes that match the users selections.
  */
 
 public class RecipeSearch {
     private static final String TAG = RecipeSearch.class.getSimpleName();
 
+    /**
+     * Sets up the queries and keys to access the Edamam recipe database.
+     * @param ingredient1 the first item from ingredientsList.
+     * @param ingredient2 the second item from ingredientsList.
+     * @param callback used to tell MainActivity if the search was a success.
+     */
     public static void searchRecipes(String ingredient1, String ingredient2, Callback callback) {
         String APP_KEY = "5204d972480b2a94b4787fa93baf8356";
         String APP_ID = "1a8f346c";
@@ -43,6 +49,12 @@ public class RecipeSearch {
         call.enqueue(callback);
     }
 
+    /**
+     * This function takes the results of the search and parses them into an
+     * array of the Recipe class.
+     * @param response is the unparsed results of the search.
+     * @return an ArrayList of all the recipes that were found in the search.
+     */
     public ArrayList<Recipe> processResults(Response response) {
         ArrayList<Recipe> recipes = new ArrayList<>();
 

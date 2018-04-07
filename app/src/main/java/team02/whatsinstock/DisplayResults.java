@@ -13,6 +13,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This activity displays the recipes that are found and will
+ * allow a user to see the instructions of the recipe when selected.
+ * This will open a web browser.
+ */
 public class DisplayResults extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +25,7 @@ public class DisplayResults extends AppCompatActivity {
         setContentView(R.layout.activity_display_results);
         final List<Recipe> recipes = (ArrayList<Recipe>) getIntent().getSerializableExtra("RECIPE_LIST");
 
+        /* Fills the list with the names of the found recipes. */
         List<String> names = new ArrayList<>();
         for (Recipe e : recipes) {
             names.add(e.getName());
@@ -32,6 +38,7 @@ public class DisplayResults extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String selected_recipe = ((TextView) view).getText().toString();
                 for (Recipe e : recipes) {
+                    /* Opens a web browser to the recipe location when selected. */
                     if (e.getName().equals(selected_recipe)) {
                         Uri uri = Uri.parse(e.getSourceUrl());
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);

@@ -128,12 +128,13 @@ public class MainActivity extends AppCompatActivity {
      * @param view works with search button.
      */
     public void onSearch(View view) throws UnirestException {
+        /* Toasts to keep the user informed. */
         final Toast toastEmpty = Toast.makeText(this,"At least two ingredients needed",Toast.LENGTH_LONG);
         final Toast toastFail = Toast.makeText(this,"No recipes found",Toast.LENGTH_LONG);
         final Toast toastSearch = Toast.makeText(this,"Search started",Toast.LENGTH_LONG);
 
         if (ingredientsList.size() < 2) {
-            toastEmpty.show();
+            toastEmpty.show(); // Make sure we are not searching for nothing
         }
         else {
             final RecipeSearch recipeSearch = new RecipeSearch();
@@ -146,10 +147,6 @@ public class MainActivity extends AppCompatActivity {
                     toastSearch.show();
                     recipes = recipeSearch.processResults(response);
                     final ArrayList<Recipe> filteredResults = new ArrayList<>();
-                    for (int i = 0; i < recipes.get(0).getIngredients().length; i++) {
-                        Log.d("TAG", recipes.get(0).getIngredients()[i]);
-                    }
-
 
                     new Thread(new Runnable() {
                         @Override
@@ -179,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }).start();
 
-                    /* Call new activity */
+                    /* Call new activity to display results */
                     if(recipes.size() != 0) {
                         Intent display = new Intent(MainActivity.this, DisplayResults.class);
                         display.putExtra("RECIPE_LIST", recipes);
