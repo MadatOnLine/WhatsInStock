@@ -1,7 +1,6 @@
 package team02.whatsinstock;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 
@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Sets up app on start and defines local variables.
-     * Will use saved [ingredientsList] if one is found.
      * @param savedInstanceState uses any saved information.
      */
     @Override
@@ -45,22 +44,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        SharedPreferences preferences = getSharedPreferences("SavedIngredients", MODE_PRIVATE);
-        if (preferences.contains("0")) {
-            int i = 0;
-            while (preferences.contains(String.valueOf(i))) {
-                String data = preferences.getString(String.valueOf(i++), "");
-                ingredientsList.add(data);
-            }
-        }
-
-
 
         //Protein Checklist
-        String[] pItems = {"Beef", "Pork", "Chicken", "Fish", "Milk", "Cheese", "Tomatoes", "Lettuce"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.rowlayout, pItems);
+        String[] pItems = {"Anchovies", "Bacon", "Beef", "Chicken", "Crab", "Duck", "Eggs", "Ham", "Lamb", "Pork", "Salmon", "Sardines", "Sausage", "Shrimp", "Tuna", "Turkey", "Peanut", "Walnut", "Chesnutt", "Cashew", "Pistachio", "Sunflower"};
+        ArrayAdapter<String> pAdapter = new ArrayAdapter<>(this, R.layout.rowlayout, pItems);
         ListView pList = (ListView) findViewById(R.id.Proteins);
-        pList.setAdapter(adapter); // Error starts here
+        pList.setAdapter(pAdapter); // Error starts here
         pList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         pList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -70,17 +59,18 @@ public class MainActivity extends AppCompatActivity {
                     ingredientsList.remove(ingredient);
                 } else {
                     ingredientsList.add(ingredient);
+                    Log.d(S_TAG, "Size: " + ingredientsList.size());
                 }
             }
         });
-/*
+
         //Dairy Checklist
-        ListView dairy = (ListView) findViewById(R.id.Dairy);
-        dairy.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        String[] dItems = {"Milk"};
-        ArrayAdapter<String> dAdapter = new ArrayAdapter<>(this, R.layout.rowlayout, R.id.Dairy, dItems);
-        dairy.setAdapter(dAdapter);
-        dairy.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        String[] dItems = {"Butter", "Cheese", "Custard", "Milk", "Yogurt"};
+        ArrayAdapter<String> dAdapter = new ArrayAdapter<>(this, R.layout.rowlayout, dItems);
+        ListView dList = (ListView) findViewById(R.id.Dairy);
+        dList.setAdapter(dAdapter); // Error starts here
+        dList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        dList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String ingredient = ((TextView) view).getText().toString();
@@ -93,12 +83,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Grains Checklist
-        ListView grains = (ListView) findViewById(R.id.Grains);
-        grains.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        String[] gItems = {"Beef", "Pork", "Chicken", "Fish"};
-        ArrayAdapter<String> gAdapter = new ArrayAdapter<>(this, R.layout.rowlayout, R.id.Grains, gItems);
-        grains.setAdapter(gAdapter);
-        grains.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        String[] gItems = {"Allspice", "Basil", "Oregano", "BayLeaves", "Beans", "Pepper", "Bread", "CarawaySeed", "Cayenne", "Chives", "Cumin", "Cuscus", "DillWeed", "Flour", "Ketchup", "Lentils", "Marjoram", "Mayo", "Nutmeg", "Oats", "Paprika", "Parsley", "Pasta", "Quinoa", "Rice", "Saffron", "Salt", "Sugar", "Tarragon", "Thyme", "Vinegar", "Mustard"};
+        ArrayAdapter<String> gAdapter = new ArrayAdapter<>(this, R.layout.rowlayout, gItems);
+        ListView gList = (ListView) findViewById(R.id.Grains);
+        gList.setAdapter(gAdapter); // Error starts here
+        gList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        gList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String ingredient = ((TextView) view).getText().toString();
@@ -111,12 +101,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Fruits and Vegetables Checklist
-        ListView fruits = (ListView) findViewById(R.id.Fruits);
-        fruits.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        String[] fItems = {"Beef", "Pork", "Chicken", "Fish"};
-        ArrayAdapter<String> fAdapter = new ArrayAdapter<>(this, R.layout.rowlayout, R.id.Fruits, fItems);
-        fruits.setAdapter(fAdapter);
-        fruits.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        String[] fItems = {"Apple", "Apricot", "Artichoke", "Asparagus", "Avocado", "Banana", "Beet", "Blackberry", "Blueberry", "Broccoli",
+                "BrusselsSprout", "Cabbage", "Cantaloupe", "Carrot", "Cauliflower", "Celery", "Cherry", "ChiliPepper", "Coconut",
+               "Corn", "Cranberry", "Cucumber", "Durian", "Eggplant", "Fig", "Garlic", "Grape", "Grapefruit", "GreenBean", "Peppers", "Kale", "Kiwi", "Leek",
+               "Lemon", "Lettuce", "Lychee", "Mango", "Olive", "Onion", "Orange", "Papaya", "Pea", "Peach", "Pear", "Pineapple", "Plum", "Pomegranate", "Potato", "Prune", "Radish", "Raisin",
+                "Raspberry", "Scallion", "Spinach", "Squash", "Strawberry", "Tamarind", "Tomato", "Turnip", "Watercress", "Watermelon", "Zucchini", "OliveOil", "VegetableOil", "CanolaOil", "PeanutOil"};
+        ArrayAdapter<String> fAdapter = new ArrayAdapter<>(this, R.layout.rowlayout, fItems);
+        ListView fList = findViewById(R.id.Fruits);
+        fList.setAdapter(fAdapter);
+        fList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        fList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String ingredient = ((TextView) view).getText().toString();
@@ -126,22 +120,7 @@ public class MainActivity extends AppCompatActivity {
                     ingredientsList.add(ingredient);
                 }
             }
-        }); */
-    }
-
-    /**
-     * Saves [ingredientsList] when app is closed.
-     */
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        SharedPreferences.Editor editor = getSharedPreferences("SavedIngredients", MODE_PRIVATE).edit();
-        int i = 0;
-        for (String data : ingredientsList) {
-            editor.putString(String.valueOf(i++), data);
-        }
-        editor.apply();
+        });
     }
 
     /**
@@ -149,12 +128,14 @@ public class MainActivity extends AppCompatActivity {
      * @param view works with search button.
      */
     public void onSearch(View view) throws UnirestException {
-        if (ingredientsList.size() == 0) {
-            Log.e(S_TAG, "List is empty.");
+        final Toast toastEmpty = Toast.makeText(this,"At least two ingredients needed",Toast.LENGTH_LONG);
+        final Toast toastFail = Toast.makeText(this,"No recipes found",Toast.LENGTH_LONG);
+        final Toast toastSearch = Toast.makeText(this,"Search started",Toast.LENGTH_LONG);
+
+        if (ingredientsList.size() < 2) {
+            toastEmpty.show();
         }
         else {
-            Log.d(S_TAG, "Starting search.");
-
             final RecipeSearch recipeSearch = new RecipeSearch();
             RecipeSearch.searchRecipes(ingredientsList.get(0), ingredientsList.get(1), new Callback(){
                 @Override
@@ -162,21 +143,32 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onResponse(Call call, Response response) {
+                    toastSearch.show();
                     recipes = recipeSearch.processResults(response);
-                    Log.d("TAG", recipes.get(0).getName());
+                    final ArrayList<Recipe> filteredResults = new ArrayList<>();
+                    for (int i = 0; i < recipes.get(0).getIngredients().length; i++) {
+                        Log.d("TAG", recipes.get(0).getIngredients()[i]);
+                    }
+
 
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
                             /*Filters out recipes that contain ingredients not in the ingredients list provided*/
-                            for (Recipe data : recipes){
-                                progressBarStatus++;
+                            for (Recipe data : recipes) {
+                                boolean check = true;
+                                progressBarStatus += (100/recipes.size());
                                 String rList[] = data.getIngredients();
                                 for (int i = 0; i < rList.length; i++) {
+                                    /*
                                     if (!(ingredientsList.contains(rList[i]))) {
-                                        recipes.remove(data);
-                                    }
+                                        check = false;
+                                    }*/ //Unfortunately, the API only takes two ingredients and the list given by the API has measurements too, so filtering is almost impossible.
                                 }
+                                if (check) {
+                                    filteredResults.add(data);
+                                }
+
                                 progressHandler.post(new Runnable() {
                                     @Override
                                     public void run() {
@@ -184,19 +176,18 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
                             }
-                            progressHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Log.d(S_TAG, "Finished!");
-                                }
-                            });
                         }
                     }).start();
 
-                    /* call new activity */
-                    Intent display = new Intent(MainActivity.this, DisplayResults.class);
-                    display.putExtra("RECIPE_LIST", recipes);
-                    startActivity(display);
+                    /* Call new activity */
+                    if(recipes.size() != 0) {
+                        Intent display = new Intent(MainActivity.this, DisplayResults.class);
+                        display.putExtra("RECIPE_LIST", recipes);
+                        startActivity(display);
+                    }
+                    else {
+                        toastFail.show(); // If nothing is found, the user is notified.
+                    }
                 }
             });
 

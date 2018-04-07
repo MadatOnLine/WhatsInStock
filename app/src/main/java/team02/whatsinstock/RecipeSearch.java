@@ -1,13 +1,11 @@
 package team02.whatsinstock;
 
-import android.util.Log;
-
-import java.io.IOException;
-import java.util.ArrayList;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -36,7 +34,6 @@ public class RecipeSearch {
         urlBuilder.addQueryParameter("app_id", APP_ID);
         urlBuilder.addQueryParameter("app_key", APP_KEY);
         String url = urlBuilder.build().toString();
-        Log.d(TAG, url);
 
         Request request = new Request.Builder()
                 .url(url)
